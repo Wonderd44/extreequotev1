@@ -1,0 +1,341 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>EZ Tree Quote | Orange & Dutchess County Tree Service</title>
+    <style>
+        :root {
+            --primary: #2d5a27; /* Forest Green */
+            --primary-dark: #1e3d1a;
+            --accent: #ff6b00; /* Safety Orange */
+            --accent-hover: #e65100;
+            --light-bg: #f4f9f4;
+            --text: #333;
+            --white: #ffffff;
+            --shadow: 0 4px 6px rgba(0,0,0,0.1);
+        }
+
+        * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Segoe UI', system-ui, sans-serif; }
+        
+        body { color: var(--text); line-height: 1.6; background: var(--light-bg); }
+
+        /* --- UTILS --- */
+        .container { max-width: 1100px; margin: 0 auto; padding: 0 20px; }
+        .btn {
+            display: inline-block;
+            background: var(--accent);
+            color: var(--white);
+            padding: 12px 30px;
+            border-radius: 5px;
+            font-weight: bold;
+            text-decoration: none;
+            border: none;
+            cursor: pointer;
+            transition: 0.3s;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+        .btn:hover { background: var(--accent-hover); transform: translateY(-2px); }
+        .btn-block { width: 100%; text-align: center; font-size: 1.1rem; }
+        .badge-row { display: flex; gap: 15px; justify-content: center; margin-top: 10px; font-size: 0.9rem; font-weight: 600; color: var(--primary); }
+        .check { color: var(--accent); margin-right: 5px; }
+
+        /* --- HEADER --- */
+        header { background: var(--white); box-shadow: var(--shadow); position: sticky; top: 0; z-index: 100; }
+        .nav-wrapper { display: flex; justify-content: space-between; align-items: center; height: 70px; }
+        .logo { font-size: 1.5rem; font-weight: 800; color: var(--primary); letter-spacing: -1px; }
+        .logo span { color: var(--accent); }
+        .call-cta { display: flex; flex-direction: column; align-items: flex-end; }
+        .phone { font-size: 1.2rem; font-weight: bold; color: var(--text); }
+        .sub-phone { font-size: 0.8rem; color: #666; }
+
+        /* --- HERO SECTION --- */
+        .hero {
+            background: linear-gradient(rgba(0,0,0,0.6), rgba(0,0,0,0.6)), url('https://images.unsplash.com/photo-1542601906990-b4d3fb778b09?ixlib=rb-1.2.1&auto=format&fit=crop&w=1950&q=80');
+            background-size: cover;
+            background-position: center;
+            padding: 80px 0;
+            color: var(--white);
+            text-align: center;
+        }
+        .hero h1 { font-size: 2.5rem; margin-bottom: 15px; line-height: 1.2; }
+        .hero p { font-size: 1.2rem; margin-bottom: 30px; opacity: 0.9; }
+
+        /* --- MULTI-STEP FORM CARD --- */
+        .quote-card {
+            background: var(--white);
+            max-width: 600px;
+            margin: -60px auto 0; /* Overlap hero */
+            border-radius: 8px;
+            box-shadow: 0 10px 25px rgba(0,0,0,0.2);
+            overflow: hidden;
+            position: relative;
+            z-index: 10;
+        }
+        
+        .form-header { background: var(--primary); color: white; padding: 20px; text-align: center; }
+        .form-header h3 { margin: 0; font-size: 1.4rem; }
+        .form-header p { font-size: 0.9rem; opacity: 0.9; margin-top: 5px; }
+
+        .progress-bar { height: 6px; background: #ddd; width: 100%; }
+        .progress-fill { height: 100%; background: var(--accent); width: 33%; transition: width 0.3s ease; }
+
+        .form-body { padding: 30px; }
+        
+        .step { display: none; animation: fadeIn 0.4s; }
+        .step.active { display: block; }
+
+        .option-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 15px; margin-bottom: 20px; }
+        .radio-option {
+            border: 2px solid #eee;
+            border-radius: 6px;
+            padding: 15px;
+            cursor: pointer;
+            text-align: center;
+            transition: 0.2s;
+        }
+        .radio-option:hover { border-color: var(--primary); background: #f9fff9; }
+        .radio-option.selected { border-color: var(--primary); background: #f0fdf0; font-weight: bold; color: var(--primary); }
+        .radio-option input { display: none; }
+        
+        .input-group { margin-bottom: 20px; text-align: left; }
+        .input-group label { display: block; margin-bottom: 8px; font-weight: 600; font-size: 0.9rem; }
+        .input-group input, .input-group textarea, .input-group select {
+            width: 100%; padding: 12px; border: 1px solid #ddd; border-radius: 5px; font-size: 1rem;
+        }
+        .file-upload {
+            border: 2px dashed #ccc; padding: 20px; text-align: center; border-radius: 5px; background: #fafafa; cursor: pointer;
+        }
+        
+        /* --- TRUST SECTION --- */
+        .trust-section { padding: 60px 0; text-align: center; }
+        .trust-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 30px; margin-top: 40px; }
+        .trust-item img { height: 50px; margin-bottom: 15px; }
+        
+        /* --- FOOTER --- */
+        footer { background: var(--primary-dark); color: #aaa; padding: 40px 0; font-size: 0.9rem; }
+        .footer-content { display: flex; justify-content: space-between; flex-wrap: wrap; gap: 20px; }
+        .footer-col h4 { color: var(--white); margin-bottom: 15px; }
+        .service-list li { list-style: none; margin-bottom: 8px; }
+
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(5px); } to { opacity: 1; transform: translateY(0); } }
+        
+        @media (max-width: 768px) {
+            .hero h1 { font-size: 1.8rem; }
+            .quote-card { margin: 20px; }
+            .nav-wrapper { flex-direction: column; height: auto; padding: 15px 0; }
+            .call-cta { align-items: center; margin-top: 10px; }
+        }
+    </style>
+</head>
+<body>
+
+<header>
+    <div class="container nav-wrapper">
+        <div class="logo">EZ<span>TREE</span>QUOTE.COM</div>
+        <div class="call-cta">
+            <a href="tel:8455550100" style="text-decoration: none;">
+                <div class="phone">📞 (845) 555-0199</div>
+            </a>
+            <div class="sub-phone">Serving Orange & Dutchess Counties</div>
+        </div>
+    </div>
+</header>
+
+<section class="hero">
+    <div class="container">
+        <h1>Expert Tree Service in the Hudson Valley</h1>
+        <p>Licensed & Insured. Fast Quotes. Fair Prices.<br>Serving Poughkeepsie, Middletown, Newburgh, and surrounding areas.</p>
+        
+        <div class="badge-row">
+            <span><span class="check">✓</span> Licensed</span>
+            <span><span class="check">✓</span> Insured</span>
+            <span><span class="check">✓</span> 5-Star Rated</span>
+        </div>
+    </div>
+</section>
+
+<div class="container">
+    <div class="quote-card" id="quoteForm">
+        <div class="progress-bar"><div class="progress-fill" id="progress"></div></div>
+        <div class="form-header">
+            <h3 id="stepTitle">Get Your Free Estimate</h3>
+            <p>Takes less than 60 seconds</p>
+        </div>
+
+        <form id="leadForm" class="form-body" onsubmit="event.preventDefault();">
+            
+            <div class="step active" id="step1">
+                <div class="input-group">
+                    <label>What service do you need?</label>
+                    <div class="option-grid">
+                        <label class="radio-option" onclick="selectOption(this)">
+                            <input type="radio" name="service" value="Removal">
+                            🌲 Tree Removal
+                        </label>
+                        <label class="radio-option" onclick="selectOption(this)">
+                            <input type="radio" name="service" value="Trimming">
+                            ✂️ Trimming/Pruning
+                        </label>
+                        <label class="radio-option" onclick="selectOption(this)">
+                            <input type="radio" name="service" value="Stump">
+                            🪵 Stump Grinding
+                        </label>
+                        <label class="radio-option" onclick="selectOption(this)">
+                            <input type="radio" name="service" value="Emergency">
+                            ⚡ Emergency/Storm
+                        </label>
+                    </div>
+                </div>
+                <button class="btn btn-block" onclick="nextStep(2)">Next Step &rarr;</button>
+            </div>
+
+            <div class="step" id="step2">
+                <div class="input-group">
+                    <label>Describe the job (optional)</label>
+                    <textarea rows="3" placeholder="Ex: Large oak tree leaning towards the house..."></textarea>
+                </div>
+                <div class="input-group">
+                    <label>Upload a photo of the tree (Helps us quote faster!)</label>
+                    <div class="file-upload" onclick="document.getElementById('fileIn').click()">
+                        📷 Click to Upload Photo
+                        <input type="file" id="fileIn" style="display: none;">
+                    </div>
+                </div>
+                <button class="btn btn-block" onclick="nextStep(3)">Last Step &rarr;</button>
+            </div>
+
+            <div class="step" id="step3">
+                <div class="input-group">
+                    <label>Where is the tree located?</label>
+                    <select>
+                        <option>Select Town...</option>
+                        <option>Middletown, NY</option>
+                        <option>Newburgh, NY</option>
+                        <option>Poughkeepsie, NY</option>
+                        <option>Beacon, NY</option>
+                        <option>Warwick, NY</option>
+                        <option>Hopewell Junction, NY</option>
+                        <option>Other (Orange/Dutchess)</option>
+                    </select>
+                </div>
+                <div class="option-grid">
+                    <div class="input-group">
+                        <label>Name</label>
+                        <input type="text" placeholder="John Doe">
+                    </div>
+                    <div class="input-group">
+                        <label>Phone</label>
+                        <input type="tel" placeholder="(845) ...">
+                    </div>
+                </div>
+                <div class="input-group">
+                    <label>Preferred Date/Time</label>
+                    <input type="text" placeholder="Ex: Monday Morning">
+                </div>
+                <button class="btn btn-block" onclick="finishForm()">Get My Free Quote</button>
+            </div>
+
+            <div class="step" id="stepSuccess" style="text-align: center; padding: 40px 20px;">
+                <div style="font-size: 3rem; margin-bottom: 20px;">✅</div>
+                <h3>Request Received!</h3>
+                <p>Thanks! We have received your request. One of our arborists will review your photos/details and call you shortly (usually within 2 hours).</p>
+                <br>
+                <a href="#" class="btn" onclick="location.reload()">Back to Home</a>
+            </div>
+
+        </form>
+    </div>
+</div>
+
+<section class="trust-section">
+    <div class="container">
+        <h2>Why Orange & Dutchess County Chooses Us</h2>
+        <div class="trust-grid">
+            <div>
+                <h3>📍 Locally Owned</h3>
+                <p>We aren't a national franchise. We live here, shop here, and know the difference between a Sugar Maple and a Red Oak.</p>
+            </div>
+            <div>
+                <h3>🛡️ Fully Insured</h3>
+                <p>Don't risk your property with unlicensed guys with chainsaws. We carry full liability and workers comp for your peace of mind.</p>
+            </div>
+            <div>
+                <h3>⚡ Fast Response</h3>
+                <p>From storm cleanup in Middletown to pruning in Fishkill, our trucks are always nearby and ready to roll.</p>
+            </div>
+        </div>
+    </div>
+</section>
+
+<footer>
+    <div class="container footer-content">
+        <div class="footer-col">
+            <h4>EZTREEQUOTE.COM</h4>
+            <p>Professional tree care services for the Hudson Valley.</p>
+            <p>📞 (845) 555-0199</p>
+        </div>
+        <div class="footer-col">
+            <h4>Service Areas</h4>
+            <ul class="service-list">
+                <li>Orange County, NY</li>
+                <li>Dutchess County, NY</li>
+                <li>Middletown • Newburgh</li>
+                <li>Poughkeepsie • Beacon</li>
+            </ul>
+        </div>
+        <div class="footer-col">
+            <h4>Services</h4>
+            <ul class="service-list">
+                <li>Tree Removal</li>
+                <li>Stump Grinding</li>
+                <li>Emergency Storm Work</li>
+                <li>Land Clearing</li>
+            </ul>
+        </div>
+    </div>
+    <div class="container" style="text-align: center; margin-top: 30px; border-top: 1px solid #444; padding-top: 20px;">
+        &copy; 2024 EZ Tree Quote. All rights reserved.
+    </div>
+</footer>
+
+<script>
+    // Simple JS to handle the multi-step form logic
+    function selectOption(element) {
+        // Visual selection logic
+        document.querySelectorAll('.radio-option').forEach(el => el.classList.remove('selected'));
+        element.classList.add('selected');
+        element.querySelector('input').checked = true;
+    }
+
+    function nextStep(stepNumber) {
+        // Hide all steps
+        document.querySelectorAll('.step').forEach(el => el.classList.remove('active'));
+        // Show current step
+        document.getElementById('step' + stepNumber).classList.add('active');
+        
+        // Update Progress Bar
+        const progressMap = { 1: '33%', 2: '66%', 3: '100%' };
+        document.getElementById('progress').style.width = progressMap[stepNumber];
+
+        // Update Title
+        if(stepNumber === 2) document.getElementById('stepTitle').innerText = "Tell us a bit more...";
+        if(stepNumber === 3) document.getElementById('stepTitle').innerText = "Where should we send the quote?";
+    }
+
+    function finishForm() {
+        // Simulate form submission
+        const btn = document.querySelector('#step3 .btn');
+        btn.innerText = "Sending...";
+        setTimeout(() => {
+            document.querySelectorAll('.step').forEach(el => el.classList.remove('active'));
+            document.getElementById('stepSuccess').classList.add('active');
+            document.querySelector('.progress-bar').style.display = 'none';
+            document.querySelector('.form-header').style.display = 'none';
+        }, 1000);
+    }
+</script>
+
+</body>
+</html>
